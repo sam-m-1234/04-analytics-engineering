@@ -25,6 +25,13 @@ models:
       2. Compute the Quarterly Revenues for each year based on total_amount
       3. Compute the Quarterly YoY (Year-over-Year) revenue growth
 
+  - name: fct_taxi_trips_monthly_fare_p95
+    description: >
+      From Question 6 - P97/P95/P90 Taxi Monthly Fare
+      1. Create a new model `fct_taxi_trips_monthly_fare_p95.sql`
+      2. Filter out invalid entries (`fare_amount > 0`, `trip_distance > 0`, and `payment_type_description in ('Cash', 'Credit Card')`)
+      3. Compute the **continous percentile** of `fare_amount` partitioning by service_type, year and and month
+
   - name: fct_taxi_trips
     description: >
       Taxi trips corresponding to both service zones (Green and yellow).
