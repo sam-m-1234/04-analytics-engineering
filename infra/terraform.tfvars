@@ -1,0 +1,7 @@
+credentials       = "./../key.json"
+default_region    = "australia-southeast1"
+default_location  = "australia-southeast1"
+project_name      = "ordinal-shard-447800-m1"
+bq_dataset_name   = "dez_m4_dataset"
+gcs_bucket_name   = "dez-m4-bucket"
+gcs_storage_class = "STANDARD"
