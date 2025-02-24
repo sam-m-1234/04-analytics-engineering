@@ -6,7 +6,7 @@ import time
 
 # Change this to your bucket name
 BUCKET_NAME = "dez-m4-bucket"
-DATASET_NAME = "dez_m4_dataset"
+DATASET_NAME = "trips_data_all"
 
 # If you authenticated through the GCP SDK you can comment out these two lines
 CREDENTIALS_FILE = "key.json"
