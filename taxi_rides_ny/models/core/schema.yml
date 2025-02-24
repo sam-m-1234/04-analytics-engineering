@@ -18,6 +18,13 @@ models:
           - not_null:
               severity: error
 
+  - name: fct_taxi_trips_quarterly_revenue
+    description: >
+      From Question 5 - Taxi Quarterly Revenue Growth
+      1. Create a new model fct_taxi_trips_quarterly_revenue.sql
+      2. Compute the Quarterly Revenues for each year based on total_amount
+      3. Compute the Quarterly YoY (Year-over-Year) revenue growth
+
   - name: fct_taxi_trips
     description: >
       Taxi trips corresponding to both service zones (Green and yellow).
@@ -71,6 +78,22 @@ models:
       - name: dropoff_datetime
         data_type: timestamp
         description: ""
+
+      - name: year
+        data_type: int64
+        description: "extracted from pickup_datetime"
+
+      - name: quarter
+        data_type: int64
+        description: "extracted from pickup_datetime"
+
+      - name: month
+        data_type: int64
+        description: "extracted from pickup_datetime"
+
+      - name: year_quarter
+        data_type: string
+        description: "extracted from pickup_datetime"
 
       - name: store_and_fwd_flag
         data_type: string
