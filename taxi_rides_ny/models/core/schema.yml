@@ -34,6 +34,8 @@ models:
 
   - name: dim_fhv_trips
 
+  - name: fct_fhv_monthly_zone_traveltime_p90
+
   - name: fct_taxi_trips
     description: >
       Taxi trips corresponding to both service zones (Green and yellow).
