@@ -49,9 +49,25 @@ from {{ source('raw_nyc_tripdata', 'ext_green_taxi' ) }}
 
 - `select * from dtc_zoomcamp_2025.raw_nyc_tripdata.ext_green_taxi`
 - `select * from dtc_zoomcamp_2025.my_nyc_tripdata.ext_green_taxi`
-- `select * from myproject.raw_nyc_tripdata.ext_green_taxi`
+- **`select * from myproject.raw_nyc_tripdata.ext_green_taxi`**
 - `select * from myproject.my_nyc_tripdata.ext_green_taxi`
 - `select * from dtc_zoomcamp_2025.raw_nyc_tripdata.green_taxi`
+
+#### Notes:
+
+Given the environment variables:
+
+export DBT_BIGQUERY_PROJECT=myproject
+export DBT_BIGQUERY_DATASET=my_nyc_tripdata
+
+DBT_BIGQUERY_PROJECT = myproject
+DBT_BIGQUERY_SOURCE_DATASET is not set, so it falls back to the default: raw_nyc_tripdata.
+
+The source('raw_nyc_tripdata', 'ext_green_taxi') resolves to:
+<database>.<schema>.<table>
+
+Using the resolved values:
+myproject.raw_nyc_tripdata.ext_green_taxi (Option 3)
 
 ### Question 2: dbt Variables & Dynamic Models
 
@@ -71,8 +87,13 @@ What would you change to accomplish that in a such way that command line argumen
 - Add `ORDER BY pickup_datetime DESC` and `LIMIT {{ var("days_back", 30) }}`
 - Update the WHERE clause to `pickup_datetime >= CURRENT_DATE - INTERVAL '{{ var("days_back", 30) }}' DAY`
 - Update the WHERE clause to `pickup_datetime >= CURRENT_DATE - INTERVAL '{{ env_var("DAYS_BACK", "30") }}' DAY`
-- Update the WHERE clause to `pickup_datetime >= CURRENT_DATE - INTERVAL '{{ var("days_back", env_var("DAYS_BACK", "30")) }}' DAY`
+- **Update the WHERE clause to `pickup_datetime >= CURRENT_DATE - INTERVAL '{{ var("days_back", env_var("DAYS_BACK", "30")) }}' DAY`**
 - Update the WHERE clause to `pickup_datetime >= CURRENT_DATE - INTERVAL '{{ env_var("DAYS_BACK", var("days_back", "30")) }}' DAY`
+
+#### Notes:
+
+The operator on the left hand side takes precedence. So that answer is:
+`pickup_datetime >= CURRENT_DATE - INTERVAL '{{ var("days_back", env_var("DAYS_BACK", "30")) }}' DAY`
 
 ### Question 3: dbt Data Lineage and Execution
 
@@ -86,7 +107,11 @@ Select the option that does **NOT** apply for materializing `fct_taxi_monthly_zo
 - `dbt run --select +models/core/dim_taxi_trips.sql+ --target prod`
 - `dbt run --select +models/core/fct_taxi_monthly_zone_revenue.sql`
 - `dbt run --select +models/core/`
-- `dbt run --select models/staging/+`
+- **`dbt run --select models/staging/+`**
+
+#### Notes:
+
+`dbt run --select models/staging/+` builds only the staging models. All the other commands impact core, which will cause fct_taxi_monthly_zone_revenue to be re-materialized.
 
 ### Question 4: dbt Macros and Jinja
 
@@ -121,11 +146,11 @@ And use on your staging, dim* and fact* models as:
 
 That all being said, regarding macro above, **select all statements that are true to the models using it**:
 
-- Setting a value for `DBT_BIGQUERY_TARGET_DATASET` env var is mandatory, or it'll fail to compile
+- **Setting a value for `DBT_BIGQUERY_TARGET_DATASET` env var is mandatory, or it'll fail to compile**
 - Setting a value for `DBT_BIGQUERY_STAGING_DATASET` env var is mandatory, or it'll fail to compile
-- When using `core`, it materializes in the dataset defined in `DBT_BIGQUERY_TARGET_DATASET`
-- When using `stg`, it materializes in the dataset defined in `DBT_BIGQUERY_STAGING_DATASET`, or defaults to `DBT_BIGQUERY_TARGET_DATASET`
-- When using `staging`, it materializes in the dataset defined in `DBT_BIGQUERY_STAGING_DATASET`, or defaults to `DBT_BIGQUERY_TARGET_DATASET`
+- **When using `core`, it materializes in the dataset defined in `DBT_BIGQUERY_TARGET_DATASET`**
+- **When using `stg`, it materializes in the dataset defined in `DBT_BIGQUERY_STAGING_DATASET`, or defaults to `DBT_BIGQUERY_TARGET_DATASET`**
+- **When using `staging`, it materializes in the dataset defined in `DBT_BIGQUERY_STAGING_DATASET`, or defaults to `DBT_BIGQUERY_TARGET_DATASET`**
 
 ## Serious SQL
 
@@ -150,8 +175,16 @@ Considering the YoY Growth in 2020, which were the yearly quarters with the best
 - green: {best: 2020/Q2, worst: 2020/Q1}, yellow: {best: 2020/Q2, worst: 2020/Q1}
 - green: {best: 2020/Q2, worst: 2020/Q1}, yellow: {best: 2020/Q3, worst: 2020/Q4}
 - green: {best: 2020/Q1, worst: 2020/Q2}, yellow: {best: 2020/Q2, worst: 2020/Q1}
-- green: {best: 2020/Q1, worst: 2020/Q2}, yellow: {best: 2020/Q1, worst: 2020/Q2}
+- **green: {best: 2020/Q1, worst: 2020/Q2}, yellow: {best: 2020/Q1, worst: 2020/Q2}**
 - green: {best: 2020/Q1, worst: 2020/Q2}, yellow: {best: 2020/Q3, worst: 2020/Q4}
+
+#### Notes:
+
+`dbt run --select fct_taxi_trips_quarterly_revenue --vars '{'is_test_run': false}'`
+
+```sql
+SELECT * FROM `ordinal-shard-447800-m1.dbt_smiller.fct_taxi_trips_quarterly_revenue` where year = 2020
+```
 
 ### Question 6: P97/P95/P90 Taxi Monthly Fare
 
@@ -162,10 +195,14 @@ Considering the YoY Growth in 2020, which were the yearly quarters with the best
 Now, what are the values of `p97`, `p95`, `p90` for Green Taxi and Yellow Taxi, in April 2020?
 
 - green: {p97: 55.0, p95: 45.0, p90: 26.5}, yellow: {p97: 52.0, p95: 37.0, p90: 25.5}
-- green: {p97: 55.0, p95: 45.0, p90: 26.5}, yellow: {p97: 31.5, p95: 25.5, p90: 19.0}
+- **green: {p97: 55.0, p95: 45.0, p90: 26.5}, yellow: {p97: 31.5, p95: 25.5, p90: 19.0}**
 - green: {p97: 40.0, p95: 33.0, p90: 24.5}, yellow: {p97: 52.0, p95: 37.0, p90: 25.5}
 - green: {p97: 40.0, p95: 33.0, p90: 24.5}, yellow: {p97: 31.5, p95: 25.5, p90: 19.0}
 - green: {p97: 55.0, p95: 45.0, p90: 26.5}, yellow: {p97: 52.0, p95: 25.5, p90: 19.0}
+
+#### Notes:
+
+`dbt run --select fct_taxi_trips_monthly_fare_p95 --vars '{'is_test_run': false}'`
 
 ### Question 7: Top #Nth longest P90 travel time Location for FHV
 
@@ -183,11 +220,42 @@ Now...
 
 For the Trips that **respectively** started from `Newark Airport`, `SoHo`, and `Yorkville East`, in November 2019, what are **dropoff_zones** with the 2nd longest p90 trip_duration ?
 
-- LaGuardia Airport, Chinatown, Garment District
+- **LaGuardia Airport, Chinatown, Garment District**
 - LaGuardia Airport, Park Slope, Clinton East
 - LaGuardia Airport, Saint Albans, Howard Beach
 - LaGuardia Airport, Rosedale, Bath Beach
 - LaGuardia Airport, Yorkville East, Greenpoint
+
+#### Notes:
+
+`dbt run --vars '{'is_test_run': false}'`
+
+````sql
+WITH filtered_trips AS (
+    SELECT
+        pickup_zone,
+        dropoff_zone,
+        trip_duration_p90
+    FROM `ordinal-shard-447800-m1.dbt_smiller.fct_fhv_monthly_zone_traveltime_p90`
+    WHERE
+        year = 2019
+        AND month = 11
+        AND pickup_zone IN ('Newark Airport', 'SoHo', 'Yorkville East')
+),
+ranked_trips AS (
+    SELECT
+        pickup_zone,
+        dropoff_zone,
+        trip_duration_p90,
+        RANK() OVER (PARTITION BY pickup_zone ORDER BY trip_duration_p90 DESC) AS rnk
+    FROM filtered_trips
+)
+
+SELECT pickup_zone, dropoff_zone, trip_duration_p90
+FROM ranked_trips
+WHERE rnk = 2
+ORDER BY pickup_zone;
+```sql
 
 ## Submitting the solutions
 
@@ -196,3 +264,4 @@ For the Trips that **respectively** started from `Newark Airport`, `SoHo`, and `
 ## Solution
 
 - To be published after deadline
+````
