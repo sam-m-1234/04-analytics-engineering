@@ -8,6 +8,8 @@ WITH trip_durations AS (
     SELECT
         pickup_location_id,
         dropoff_location_id,
+        pickup_zone,
+        dropoff_zone,
         year,
         month,
         TIMESTAMP_DIFF(dropoff_datetime, pickup_datetime, SECOND) AS trip_duration
@@ -17,6 +19,8 @@ p90_trip_durations AS (
     SELECT
         pickup_location_id,
         dropoff_location_id,
+        pickup_zone,
+        dropoff_zone,
         year,
         month,
         PERCENTILE_CONT(trip_duration, 0.90) OVER (
@@ -26,4 +30,4 @@ p90_trip_durations AS (
 )
 
 SELECT DISTINCT * FROM p90_trip_durations
-ORDER BY year, month, pickup_location_id, dropoff_location_id
+ORDER BY year, month, pickup_zone, dropoff_zone;
