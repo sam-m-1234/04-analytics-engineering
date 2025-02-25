@@ -30,4 +30,4 @@ p90_trip_durations AS (
 )
 
 SELECT DISTINCT * FROM p90_trip_durations
-ORDER BY year, month, pickup_zone, dropoff_zone;
+ORDER BY year, month, pickup_zone, dropoff_zone
