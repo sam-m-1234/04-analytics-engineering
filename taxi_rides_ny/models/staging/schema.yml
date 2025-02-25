@@ -7,6 +7,7 @@ sources:
       "{{ env_var('DBT_SCHEMA', 'trips_data_all') }}"
       # loaded_at_field: record_loaded_at
     tables:
+      - name: fhv_tripdata
       - name: green_tripdata
       - name:
           yellow_tripdata
@@ -14,6 +15,7 @@ sources:
           # error_after: {count: 6, period: hour}
 
 models:
+  - name: stg_fhv_tripdata
   - name: stg_green_tripdata
     description: >
       Trip made by green taxis, also known as boro taxis and street-hail liveries.
