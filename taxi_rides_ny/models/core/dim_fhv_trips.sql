@@ -24,11 +24,9 @@ select
     fhv_tripdata.pickup_datetime,
     fhv_tripdata.dropoff_datetime,
 
-    -- **New Time Dimensions**
     EXTRACT(YEAR FROM fhv_tripdata.pickup_datetime) AS year,
-    EXTRACT(QUARTER FROM fhv_tripdata.pickup_datetime) AS quarter,
     EXTRACT(MONTH FROM fhv_tripdata.pickup_datetime) AS month,
-    CONCAT(EXTRACT(YEAR FROM fhv_tripdata.pickup_datetime), '/Q', EXTRACT(QUARTER FROM fhv_tripdata.pickup_datetime)) AS year_quarter,
+
 from fhv_tripdata
 inner join dim_zones as pickup_zone
 on fhv_tripdata.pickup_location_id = pickup_zone.locationid
