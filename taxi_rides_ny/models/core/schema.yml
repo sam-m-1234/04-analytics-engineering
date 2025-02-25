@@ -32,6 +32,8 @@ models:
       2. Filter out invalid entries (`fare_amount > 0`, `trip_distance > 0`, and `payment_type_description in ('Cash', 'Credit Card')`)
       3. Compute the **continous percentile** of `fare_amount` partitioning by service_type, year and and month
 
+  - name: dim_fhv_trips
+
   - name: fct_taxi_trips
     description: >
       Taxi trips corresponding to both service zones (Green and yellow).
